@@ -1,5 +1,7 @@
 import OpenAI from 'openai';
 
+const model = 'gpt-3.5-turbo-16k'//'gpt-4o'
+
 const openai = new OpenAI({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
 });
@@ -100,7 +102,7 @@ All responses should only contain a JSON outline with a single root json object.
 
 async function generateRoughOutline(topic: string): Promise<IOutline> {
     const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model,
         messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: `Create an ebook about ${topic}` },
@@ -114,7 +116,7 @@ async function generateRoughOutline(topic: string): Promise<IOutline> {
 
 async function refineSectionOutline(section: IOutline): Promise<IOutline> {
     const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model,
         messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: `Further refine and add detail to this portion of the outline: ${JSON.stringify(section)}` }
@@ -141,7 +143,7 @@ async function refineOutline(maxDepth: number, outline: IOutline, currentDepth: 
 
 async function generateFinalTextContent(outline: IOutline): Promise<string> {
     const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model,
         messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: `Write the chapter corresponding to the provided outline. Make sure to write this in the format of an EBook. Try to write at least 3 paragraphs: ${JSON.stringify(outline)}` }
@@ -153,7 +155,7 @@ async function generateFinalTextContent(outline: IOutline): Promise<string> {
 
 async function generateFinalFormatting(document: string): Promise<string> {
     const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model,
         messages: [
             { role: 'system', content: "Create an interactive table of contents for the provided markdown text. Reply with only the formatted string." },
             { role: 'user', content: document }
@@ -162,7 +164,6 @@ async function generateFinalFormatting(document: string): Promise<string> {
 
     return document + completion.choices[0].message.content ?? ""
 }
-
 
 /*
 Prompts:
