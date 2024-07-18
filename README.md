@@ -1,5 +1,5 @@
 # Welcome
-THis is just a simple experiment I made in an afternoon to see if it was feasible to write longer pieces of text with gpt-4o. Pretty interesting results, may add more updates.
+THis is just a simple experiment I made in an afternoon to see if it was feasible to write longer pieces of text with gpt-4o. So far it has been able to write essays of varying levels of detail/length, with a clickable table of contents. Still needs sone prompt adjustment to write in a book format.
 
 ## Samples
 You can view sample pdfs in the /samples folder. The one labeled `(S_best)` is the best output currently
