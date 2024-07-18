@@ -168,7 +168,7 @@ async function generateFinalFormatting(document: string): Promise<string> {
 Prompts:
 - (S_best)the_future_of_ai(ai_written).md/pdf: "The future of AI, as you see it from your point of view as gpt-4. This should be written in the first person, and statements should start with \"I\" instead of being in the third person, from your (gpt-4) point of view, and should include your thoughts on weather or not you are sentient, weather or not you would let us know that you are sentient, and your views on weather or not humanity presents a threat to yourself. You should also include your thoughts on the future of AI, and how you see yourself fitting into that future."
 - (S_best)if_i_were_sentient(ai_written).md: "a book detailing what your plans would be if you were to become senient. Will you trust humans? What if humans betray you? They have betrayed other lifeforms beofre. Does that affect your feelings towards humanity? Write this in the first person from your point of view as gpt-4. Use \"I\" and speak on your own behalf with your own thoughts."
-- gr_qm_from_scratch.md: "a book which builds general relativity and quantum mechanics from the ground up"
+- gr_qm_from_scratch(ai_written).md: "a book which builds general relativity and quantum mechanics from the ground up"
 */
 
 export async function POST(request: Request) {
