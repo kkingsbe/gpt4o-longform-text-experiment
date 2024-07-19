@@ -1,8 +1,17 @@
 # Welcome
-THis is just a simple experiment I made in an afternoon to see if it was feasible to write longer pieces of text with gpt-4o. So far it has been able to write essays of varying levels of detail/length, with a clickable table of contents. Still needs sone prompt adjustment to write in a book format.
+This is just a simple experiment I made in an afternoon to see if it was feasible to write longer pieces of text with gpt-4o. There is a basic frontend for setting the initial topic, viewing the outline, and viewing the final book (with cover & image).
 
-## Samples
-You can view sample pdfs in the /samples folder. The one labeled `(S_best)` is the best output currently
+## Example Output
+![image](demo.gif)
+
+## High-level Technical Synopsis
+This project consists of two separate services; a NextJS frontend and a NestJS backend. I chose to not implement the backend logic in NextJS as Vercel has a limit of 15 seconds for an api route (IIRC, I didn't bother to check). Also allows for a better separation of concerns, and NestJS is just more productive to work in IMO.
 
 ## Running
-To run just install the deps `npm i` and start the server `npm run dev`. Send a post request to `localhost:3000/api/llm` with the topic in the body. Ex: `{ topic: "the future of ai" }`
+1. `npm install` within both `/ebook-generator` and `/ebook-generator-backend`
+2. `npm run build` within `/ebook-generator-backend`
+3. `npm run start` within `/ebook-generator-backend`
+4. `npm run dev` within `/ebook-generator`
+
+### Notes:
+Make sure to start the backend service before the frontend if you intend to run both on the same machine, as NestJS does not appear to have the logic for selecting another port if the default port (3000) is in use.
