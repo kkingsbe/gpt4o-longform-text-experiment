@@ -1,3 +1,5 @@
+[Deployment](https://aibookwriter-kkingsbes-projects.vercel.app/)
+
 # Welcome
 This is just a simple experiment I made in an afternoon to see if it was feasible to write longer pieces of text with gpt-4o. There is a basic frontend for setting the initial topic, viewing the outline, and viewing the final book (with cover & image).
 
