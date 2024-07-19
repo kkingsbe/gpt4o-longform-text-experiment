@@ -128,6 +128,17 @@ export class LLM {
         const image_url = response.data[0].url;
         return image_url
     }
+
+    static async tts(document: string): Promise<Buffer> {
+        const mp3 = await openai.audio.speech.create({
+            model: "tts-1",
+            voice: "fable",
+            input: document,
+        });
+
+        const buffer = Buffer.from(await mp3.arrayBuffer())
+        return buffer
+    }
     
     /*
     Prompts:

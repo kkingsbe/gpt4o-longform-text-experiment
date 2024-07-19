@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label"
 import axios from "axios";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown"
 import { Switch } from "@/components/ui/switch"
+import { toast } from "sonner"
 
 export interface IOutline {
   title: string,
@@ -32,36 +33,63 @@ export default function Home() {
   const [poundsOfCoal, setPoundsOfCoal] = useState<number>(0)
   const [viewMode, setViewMode] = useState<"outline" | "content">("outline")
 
+  useEffect(() => {
+    toast(status)
+  }, [status])
+
+  async function delay(ms: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms)
+    })
+  }
+
   async function generate() {
     if(loading) return
     setLoading(true)
+
+    // await tts("Generating your book now. This may take a few minutes. I will provide you with updates as I progress.")
+    // await delay(5000)
 
     let tempPoundsOfCoal = 0
 
     console.log("Generating cover...")
     setStatus("Generating cover...")
+    // await tts("Lets start with generating a cover")
     const tempCover = await generateCover()
     setCover(tempCover)
+    // await tts("This should do")
+    // await delay(6000)
 
     console.log("Generating outline...")
     setStatus("Generating outline...")
+    // await tts("Next up, generating an outline. I will start with a rough outline and before taking another pass to refine it to make it more detailed. You can view it live below.")
     const { data: initialOutline, tokens: initialOutlineTokens } = await generateOutline()
     setOutline(initialOutline)
     setPath([initialOutline])
     tempPoundsOfCoal += tokensToPoundsofCoal(initialOutlineTokens)
+    // await delay(10000)
+    // await tts("The initial outline has been generated. I will now refine it to make it more detailed.")
     setPoundsOfCoal(tempPoundsOfCoal)
+    // await delay(15000)
+    // await tts("Also, just as a sidenote, we have burned " + tempPoundsOfCoal.toFixed(3) + " punds of coal so far. Lets see where it ends up at the end.")
 
     console.log("Refining outline...")
     setStatus("Refining outline...")
     const { data: refinedOutline, tokens: refinedOutlineTokens } = await refineOutline(initialOutline)
     setOutline(refinedOutline)
     setPath([refinedOutline])
+    
+    // await delay(10000)
+    // await tts("The outline has been refined. I will now generate the content for each section.")
     tempPoundsOfCoal += tokensToPoundsofCoal(refinedOutlineTokens)
     setPoundsOfCoal(tempPoundsOfCoal)
 
     setStatus("Generating content...")
+    setViewMode("content")
     let fullContent = ""
     for(let section of refinedOutline.sections) {
+      // await delay(5000)
+      // await tts("Next, I will generate the content for the section on " + section.title)
       const { data: content, tokens: contentTokens} = await generateSectionContent(section)
       fullContent += "\n" + content
       setFinalContent(fullContent)
@@ -70,8 +98,11 @@ export default function Home() {
       console.log(content)
     }
 
-    // const finalizedConent = await finalizeContent(fullContent)
-    // setFinalContent(finalizedConent)
+    // await delay(5000)
+    // await tts("That looks good to me. I will now read the full document for you. Have a nice day.")
+
+    // await delay(5000)
+    // await tts(fullContent.slice(1000, 5000))
 
     setStatus("Complete")
     
@@ -129,14 +160,21 @@ export default function Home() {
     return tokens * 7.46E-6
   }
 
-  // async function finalizeContent(document: string): Promise<string> {
-  //   setStatus("Finalizing content...")
-  //   const { data } = await axios.post(process.env.NEXT_PUBLIC_BACKEND_URL! + "/generate/finalize-content", {
-  //     document
-  //   })
+  async function tts(document: string) {
+    const { data } = await axios.post(process.env.NEXT_PUBLIC_BACKEND_URL! + "/generate/tts", {
+      document
+    })
 
-  //   return data
-  // }
+    const buffer = new Uint8Array(data.data);
+    const arrayBuffer = buffer.buffer;
+
+    const audioContext = new (window.AudioContext)();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
+    const source = audioContext.createBufferSource()
+    source.buffer = audioBuffer
+    source.connect(audioContext.destination)
+    source.start(0)
+  }
 
   return (
     <main className="flex min-h-screen flex-col lg:p-24 p-2 gap-20">

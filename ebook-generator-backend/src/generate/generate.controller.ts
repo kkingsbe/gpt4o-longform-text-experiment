@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Query } from '@nestjs/common';
 import { IOutline, LLM, LLMResponse } from 'src/lib/llm';
 
 @Controller('generate')
@@ -26,5 +26,11 @@ export class GenerateController {
     @Post("generate-cover")
     async generateCover(@Body("topic") topic: string): Promise<string> {
         return await LLM.generateCover(topic)
+    }
+
+    @Post("tts")
+    @Header('content-type', 'audio/mpeg')
+    async generateTTS(@Body("document") document: string): Promise<Buffer> {
+        return await LLM.tts(document)
     }
 }
